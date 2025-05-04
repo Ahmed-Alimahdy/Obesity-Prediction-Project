@@ -1,39 +1,50 @@
 import pandas as pd
+from sklearn.feature_selection import SelectKBest, chi2, f_classif
 
 class PreProcess:
     def __init__(self, data_csv):
         self.df = pd.read_csv(data_csv)
-        self.handleNulls()
-        self.convertData(self.getCategorical())
-        self.encodeCategorical(self.getCategorical())
-        self.normalize()
-        
-    # Handle Null Values
-    def handleNulls(self):
+        self.__handleNulls()
+        self.__convertData(self.__getCategorical())
+        self.__encodeCategorical(self.__getCategorical())
+        self.__handleOutliers(self.__getNumerics())
+        self.__normalize(self.__getNumerics())
+
+    def __handleNulls(self):
         self.df.fillna({'CALC':  'Unknown', 'FCVC': self.df['FCVC'].mean()}, inplace=True)
-        # print(df.isna().sum())
         
-    # Extracts Categorical Data
-    def getCategorical(self):
-        return ['Gender', 'family_history_with_overweight', 'FAVC', 'CAEC', 'SMOKE', 'SCC', 'CALC', 'MTRANS', 'NObeyesdad']
-        
+    # Extract Categorical Data
+    def __getCategorical(self):
+        return self.df.select_dtypes(include=['object']).columns.tolist()
     
+    # Extract Numerical data
+    def __getNumerics(self):
+        return self.df.select_dtypes(include=['number']).columns.tolist()
+        
     # Convert Data to Suitable Data Types
-    def convertData(self, catData):
-        ojbects = catData
-        for obj in ojbects:
+    def __convertData(self, catData):
+        for obj in catData:
             self.df[obj] = self.df[obj].astype('category')
-        # print(self.df.info())
-
-    # Encode Categorical Data
-    def encodeCategorical(self, catData):
+        
+    def __encodeCategorical(self, catData):
         self.df = pd.get_dummies(self.df, columns=catData)
-        # print(self.df.info())
     
-    # Normalize Numerical Values
-    def normalize(self):
-        numerics = ['Age', 'Height', 'Weight', 'FCVC', 'NCP', 'CH2O', 'FAF', 'TUE']
-        for num in numerics:
-            self.df[num] = ((self.df[num] - self.df[num].min()) / (self.df[num].max() - self.df[num].min()))
+    def __handleOutliers(self, numData):
+        num_df = self.df[numData]
+        Q1 = num_df.quantile(0.25)
+        Q3 = num_df.quantile(0.75)
+        IQR = Q3 - Q1
+        lowerBound = Q1 - 1.5*IQR
+        upperBound = Q3 + 1.5*IQR
+        
+        for num in numData:
+            self.df[num] = self.df[num].clip(lower=lowerBound, upper=upperBound)
 
-preProc = PreProcess("train_dataset.csv")
+    def __normalize(self, numData):
+        for num in numData:
+            col = self.df[num]
+            self.df[num] = ((col - col.min()) / (col.max() - col.min()))
+            
+
+# Test
+# preProc = PreProcess("train_dataset.csv")
