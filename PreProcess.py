@@ -121,7 +121,8 @@ class PreProcess:
     
     def getselectiondata(self):
        features = self.topFeatures  # Make a copy to avoid modifying the original
-       features.append('NObeyesdad')
+       if('NObeyesdad' not in features):
+        features.append('NObeyesdad')
        return self.df[features].copy()
     
     def feature_engineering(self):
@@ -144,12 +145,11 @@ class PreProcess:
     def Correlation_Pruning(self):
        corr_matrix = self.df.corr().abs()
        upper = corr_matrix.where(np.triu(np.ones(corr_matrix.shape), k=1).astype(bool))
-       to_drop = [col for col in upper.columns if any(upper[col] > 0.9)]
+       to_drop = [col for col in upper.columns if any(upper[col] > 0.95)]
        self.df = self.df.drop(columns=to_drop)
     
 #Read  the dataset and process it
-pre = PreProcess("train_dataset.csv", num_features=5)  # Modify k (num_features) as needed
-processed_df = pre.getselectiondata()
-processed_df.to_csv("processed_data.csv", index=False)
+
+
 
 
