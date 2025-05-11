@@ -7,7 +7,7 @@ from sklearn.feature_selection import mutual_info_classif,RFE
 from sklearn.preprocessing import PowerTransformer, LabelEncoder,StandardScaler,MinMaxScaler
 
 class PreProcess:
-    def __init__(self, data_csv, num_features):
+    def __init__(self, data_csv, num_features,prun_factor):
         self.df = pd.read_csv(data_csv)
         self.__handleDublicates()
         self.__handleNulls()  
@@ -56,6 +56,7 @@ class PreProcess:
      mi_scores = mutual_info_classif(X, y)
      mi_features = X.columns[np.argsort(mi_scores)[-num_features:]]
      print("Mutual Information: ",mi_features)
+
      # 2. RFE with Logistic Regression
      model = LogisticRegression(max_iter=1000)
      rfe = RFE(model, n_features_to_select=num_features)
@@ -68,6 +69,7 @@ class PreProcess:
      xgb.fit(X, y)
      xgb_features = X.columns[np.argsort(xgb.feature_importances_)[-num_features:]]
      print("XGBoost: ",xgb_features)
+     
      # Get consensus features
      all_features = (set(mi_features) | set(rfe_features)) | set(xgb_features)
      print("all features: ",all_features)
@@ -145,7 +147,7 @@ class PreProcess:
     def Correlation_Pruning(self):
        corr_matrix = self.df.corr().abs()
        upper = corr_matrix.where(np.triu(np.ones(corr_matrix.shape), k=1).astype(bool))
-       to_drop = [col for col in upper.columns if any(upper[col] > 0.95)]
+       to_drop = [col for col in upper.columns if any(upper[col] > self.prun_factor)]
        self.df = self.df.drop(columns=to_drop)
     
 #Read  the dataset and process it

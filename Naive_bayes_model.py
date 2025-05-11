@@ -1,3 +1,5 @@
+
+import pandas as pd
 from sklearn.naive_bayes import GaussianNB
 from matplotlib import pyplot as plt
 from sklearn.model_selection import GridSearchCV,cross_val_score
@@ -5,14 +7,14 @@ import PreProcess as pp
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix, ConfusionMatrixDisplay
 # === 1. Preprocessing ===
 print("=== Preprocessing Training Data ===")
-pre_train = pp.PreProcess("train_dataset.csv", num_features=12)  # Modify k (num_features) as needed
-processedtrain_df = pre_train.getselectiondata()
-processedtrain_df.to_csv("train processed_data.csv", index=False)
+pre_train = pp.PreProcess("train_dataset.csv", num_features=4,prun_factor=.95)  # Modify k (num_features) as needed
+processedtrain_df = pd.read_csv("train processed_data.csv")
+#processedtrain_df.to_csv("train processed_data.csv", index=False)
 
 print("\n=== Preprocessing Test Data ===")
-pre_test = pp.PreProcess("test_dataset.csv", num_features=12)  # Modify k (num_features) as needed
-processedtest_df = pre_test.getallData()[processedtrain_df.columns]
-processedtest_df.to_csv("test processed_data.csv", index=False)
+#pre_test = pp.PreProcess("test_dataset.csv", num_features=12)  # Modify k (num_features) as needed
+processedtest_df = pd.read_csv("test processed_data.csv")
+#processedtest_df.to_csv("test processed_data.csv", index=False)
 
 # === 2. Split Features and Labels ===
 X_train=processedtrain_df.drop(columns='NObeyesdad')
