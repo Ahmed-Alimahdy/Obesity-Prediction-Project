@@ -54,12 +54,12 @@ def one_hot(y, num_classes):
     return np.eye(num_classes)[y]
 # === 2. Preprocessing ===
 print("=== Preprocessing Training Data ===")
-pre_train = pp.PreProcess("train_dataset.csv", num_features=2,prun_factor=.8)
+pre_train = pp.PreProcess("train_dataset.csv", num_features=12,prun_factor=.8)
 processedtrain_df = pre_train.getselectiondata()
 processedtrain_df.to_csv("train processed_data.csv", index=False)
 
 print("\n=== Preprocessing Test Data ===")
-pre_test = pp.PreProcess("test_dataset.csv", num_features=2)
+pre_test = pp.PreProcess("test_dataset.csv", num_features=12,prun_factor=.8)
 processedtest_df = pre_test.getallData()[processedtrain_df.columns]
 processedtest_df.to_csv("test processed_data.csv", index=False)
 

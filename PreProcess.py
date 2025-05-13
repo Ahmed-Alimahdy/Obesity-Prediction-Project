@@ -21,7 +21,7 @@ class PreProcess:
         #self.__powerTransform(numerics)
         self.__Standardization(numerics)
         #self.__normalization(numerics)
-        self.Correlation_Pruning()
+        self.Correlation_Pruning(pruninig_factor=prun_factor)
         #self.selected_columns = self.__featureSelection(numerics, categoricals, num_features)
         self.topFeatures = self.HybridFeatureSelection(num_features)
 
@@ -144,10 +144,10 @@ class PreProcess:
      return self.df
     
     # to prevent the redundancy of features 
-    def Correlation_Pruning(self):
+    def Correlation_Pruning(self,pruninig_factor):
        corr_matrix = self.df.corr().abs()
        upper = corr_matrix.where(np.triu(np.ones(corr_matrix.shape), k=1).astype(bool))
-       to_drop = [col for col in upper.columns if any(upper[col] > self.prun_factor)]
+       to_drop = [col for col in upper.columns if any(upper[col] > pruninig_factor)]
        self.df = self.df.drop(columns=to_drop)
     
 #Read  the dataset and process it
