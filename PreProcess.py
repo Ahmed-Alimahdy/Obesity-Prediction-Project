@@ -7,7 +7,7 @@ from sklearn.feature_selection import mutual_info_classif,RFE
 from sklearn.preprocessing import PowerTransformer, LabelEncoder,StandardScaler,MinMaxScaler
 
 class PreProcess:
-    def __init__(self, data_csv, num_features):
+    def __init__(self, data_csv, num_features,prun_factor):
         self.df = pd.read_csv(data_csv)
         self.__handleDublicates()
         self.__handleNulls()  
@@ -21,7 +21,7 @@ class PreProcess:
         #self.__powerTransform(numerics)
         self.__Standardization(numerics)
         #self.__normalization(numerics)
-        self.Correlation_Pruning()
+        self.Correlation_Pruning(pruninig_factor=prun_factor)
         #self.selected_columns = self.__featureSelection(numerics, categoricals, num_features)
         self.topFeatures = self.HybridFeatureSelection(num_features)
 
@@ -56,6 +56,7 @@ class PreProcess:
      mi_scores = mutual_info_classif(X, y)
      mi_features = X.columns[np.argsort(mi_scores)[-num_features:]]
      print("Mutual Information: ",mi_features)
+
      # 2. RFE with Logistic Regression
      model = LogisticRegression(max_iter=1000)
      rfe = RFE(model, n_features_to_select=num_features)
@@ -68,6 +69,7 @@ class PreProcess:
      xgb.fit(X, y)
      xgb_features = X.columns[np.argsort(xgb.feature_importances_)[-num_features:]]
      print("XGBoost: ",xgb_features)
+     
      # Get consensus features
      all_features = (set(mi_features) | set(rfe_features)) | set(xgb_features)
      print("all features: ",all_features)
@@ -121,7 +123,8 @@ class PreProcess:
     
     def getselectiondata(self):
        features = self.topFeatures  # Make a copy to avoid modifying the original
-       features.append('NObeyesdad')
+       if('NObeyesdad' not in features):
+        features.append('NObeyesdad')
        return self.df[features].copy()
     
     def feature_engineering(self):
@@ -141,15 +144,14 @@ class PreProcess:
      return self.df
     
     # to prevent the redundancy of features 
-    def Correlation_Pruning(self):
+    def Correlation_Pruning(self,pruninig_factor):
        corr_matrix = self.df.corr().abs()
        upper = corr_matrix.where(np.triu(np.ones(corr_matrix.shape), k=1).astype(bool))
-       to_drop = [col for col in upper.columns if any(upper[col] > 0.9)]
+       to_drop = [col for col in upper.columns if any(upper[col] > pruninig_factor)]
        self.df = self.df.drop(columns=to_drop)
     
 #Read  the dataset and process it
-pre = PreProcess("train_dataset.csv", num_features=5)  # Modify k (num_features) as needed
-processed_df = pre.getselectiondata()
-processed_df.to_csv("processed_data.csv", index=False)
+
+
 
 
