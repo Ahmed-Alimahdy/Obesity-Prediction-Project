@@ -1,30 +1,60 @@
 import pandas as pd
 import numpy as np
 from sklearn.linear_model import LogisticRegression
-import EDA
 from xgboost import XGBClassifier
 from sklearn.feature_selection import mutual_info_classif,RFE
 from sklearn.preprocessing import PowerTransformer, LabelEncoder,StandardScaler,MinMaxScaler
 
 class PreProcess:
-    def __init__(self, data_csv, num_features,prun_factor):
+ 
+    def __init__(self, data_csv, num_features=None, prun_factor=None):
         self.df = pd.read_csv(data_csv)
-        self.__handleDublicates()
-        self.__handleNulls()  
-        #self.__convertData(self.__getCategorical())
-        numerics = self.__getNumerics()  
-        categoricals = self.__getCategorical()
-        self.__encodeCategorical(self.__getCategorical())
-        self.df=self.feature_engineering()  
-        self.__handleOutliers(numerics)
-        # change one of the features scaling according to the model
-        #self.__powerTransform(numerics)
-        self.__Standardization(numerics)
-        #self.__normalization(numerics)
-        self.Correlation_Pruning(pruninig_factor=prun_factor)
-        #self.selected_columns = self.__featureSelection(numerics, categoricals, num_features)
-        self.topFeatures = self.HybridFeatureSelection(num_features)
+        if num_features is not None and prun_factor is not None:
+            self.apply_preprocess(num_features, prun_factor)
 
+    def apply_preprocess(self,num_features,prun_factor):
+       self.__handleDublicates()
+       self.__handleNulls()  
+       #self.__convertData(self.__getCategorical())
+       numerics = self.__getNumerics()  
+       categoricals = self.__getCategorical()
+       self.__encodeCategorical(self.__getCategorical())
+       self.df=self.feature_engineering()  
+       self.__handleOutliers(numerics)
+       # change one of the features scaling according to the model
+       #self.__powerTransform(numerics)
+       self.__Standardization(numerics)
+       #self.__normalization(numerics)
+       self.Correlation_Pruning(pruninig_factor=prun_factor)
+       #self.selected_columns = self.__featureSelection(numerics, categoricals, num_features)
+       self.topFeatures = self.HybridFeatureSelection(num_features)
+
+    def prepare_user_input(self, raw_data):
+     # 1. Convert to DataFrame
+     user_df = pd.DataFrame([raw_data])
+    
+    
+     # 3. Encode categorical features
+     categorical_cols = [col for col in self.__getCategorical() if col in user_df.columns]
+     for col in categorical_cols:
+        if col in self.label_encoders:
+            user_df[col] = self.label_encoders[col].transform(user_df[col])
+    
+     # 4. Standardize numerical features using the saved scaler
+     numeric_cols = [col for col in self.__getNumerics() if col in user_df.columns]
+     if numeric_cols and hasattr(self, 'scaler'):
+        user_df = self.scaler.fit_transform(user_df[numeric_cols])  # Use transform, not fit_transform
+    
+     # 5. Select only the features used in training
+     if hasattr(self, 'topFeatures'):
+        final_features = [f for f in self.topFeatures if f != 'NObeyesdad']
+        missing_cols = set(final_features) - set(user_df.columns)
+        for col in missing_cols:
+            user_df[col] = 0  # Fill missing with 0 (consider other strategies)
+        user_df = user_df[final_features]
+    
+     return user_df
+    
     def __handleNulls(self):
         self.df.fillna({'CALC': 'Unknown', 'FCVC': self.df['FCVC'].mean()}, inplace=True)
 
@@ -104,9 +134,14 @@ class PreProcess:
         print("Applying power transformation to:", numData)
 
     def __Standardization(self,numData):
-        scaler=StandardScaler()
-        self.df[numData]=scaler.fit_transform(self.df[numData])
+        self.scaler=StandardScaler()
+        self.df[numData]=self.scaler.fit_transform(self.df[numData])
         print("Applying Standardization to:", numData)
+
+    def repeated_Standardization(self):
+        self.scaler=StandardScaler()
+        self.df=self.scaler.fit_transform(self.df)
+
     
     def __normalization(self,numData):
         scaler=MinMaxScaler()
@@ -150,8 +185,3 @@ class PreProcess:
        to_drop = [col for col in upper.columns if any(upper[col] > pruninig_factor)]
        self.df = self.df.drop(columns=to_drop)
     
-#Read  the dataset and process it
-
-
-
-

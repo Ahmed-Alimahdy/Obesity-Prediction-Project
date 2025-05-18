@@ -14,13 +14,13 @@ class DisplayModelsFrame(Frame):
                         background='#042940',
                         highlightthickness=0)
         canvas.place(x=0, y=0)
-        canvas.create_rectangle(0, 38, 570, 135, fill='#9fc131')  # vecBg2
-        canvas.create_rectangle(0, 23, 580, 120, fill='#005c53')  # vecBg1
+        canvas.create_rectangle(0, 38, 400, 95, fill='#9fc131')  # vecBg2
+        canvas.create_rectangle(0, 23, 410, 85, fill='#005c53')  # vecBg1
 
         # ---- Title ---- #
         title = Label(self,
                       text="Models Accuracy:",
-                      font=('cal sans', 48, 'bold'),
+                      font=('cal sans', 26, 'bold'),
                       fg='white',
                       bg='#005c53')
         title.place(x=40, y=25)
@@ -31,12 +31,13 @@ class DisplayModelsFrame(Frame):
 
         # TODO: Replace with your model accuracy
         Models = [
-            ('Logistic Regression', '99%'),
-            ('SVM', '70%'),
-            ('KNN', '85%'),
-            ('Random Forest', '59%'),
-            ('XG Boost', '89%'),
-            ('Naive Bayes', '79%'),
+            ('Logistic Regression', '97%'),
+            ('SVM', '99%'),
+            ('KNN', '88%'),
+            ('Random Forest', '100%'),
+            ('XG Boost', '100%'),
+            ('Naive Bayes', '68%'),
+            ('Decision tree', '93%'),
         ]
         self.display_models(Models, VBox)
         self.create_buttons()
@@ -77,7 +78,7 @@ class DisplayModelsFrame(Frame):
             progress_bar.place(x=420, y=15, width=500, height=30)
             progress_bar["value"] = progress_value  # Set the progress bar value
 
-            y_position += 70  # Add spacing between frames
+            y_position += 50  # Add spacing between frames
 
     def create_buttons(self):
         # ---- Return to Main Menu Button ---- #
