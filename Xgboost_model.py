@@ -77,7 +77,7 @@ def load_model(raw_data):
  #print(f"Cross-validation accuracy scores: {scores}")
  #print(f"Mean CV Accuracy: {scores.mean():.4f}")
 
- # === 5. Train vs Test Accuracy to Check Overfitting ===
+  #=== 5. Train vs Test Accuracy to Check Overfitting ===
  #print("\n=== Overfitting Check ===")
  #train_preds = best_model.predict(X_train)
  #test_preds = best_model.predict(X_test)
@@ -108,3 +108,13 @@ def load_model(raw_data):
  disp.plot()
  plt.show() '''
  return predict(standardize(raw_data), best_model)
+load_model( {
+    'FCVC': 1,
+    'Meal_Regularity': 1,
+    'Weight': 60,
+    'Height': 1.60,
+    'Gender': 1,
+    'CaloricIntake': 1800,
+    'TUE': 2,
+    'Age': 25
+})

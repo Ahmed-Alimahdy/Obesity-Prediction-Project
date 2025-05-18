@@ -146,8 +146,8 @@ def load_model(raw_data):
  weights= weights_nums
  biases= biases_nums
  # === 9. Evaluate ===
- train_preds = predict(X_train_bias, weights, biases)
- test_preds = predict(X_test_bias, weights, biases)
+ #train_preds = predict(X_train_bias, weights, biases)
+ #test_preds = predict(X_test_bias, weights, biases)
 
  #print("\nTrain Accuracy:", accuracy_score(Y_train, train_preds))
  #print("Test Accuracy:", accuracy_score(Y_test, test_preds))

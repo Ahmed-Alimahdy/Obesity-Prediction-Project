@@ -16,7 +16,7 @@ class PreProcess:
        self.__handleDublicates()
        self.__handleNulls()  
        #self.__convertData(self.__getCategorical())
-       numerics = self.__getNumerics()  
+       numerics = self.__getNumerics()
        categoricals = self.__getCategorical()
        self.__encodeCategorical(self.__getCategorical())
        self.df=self.feature_engineering()  

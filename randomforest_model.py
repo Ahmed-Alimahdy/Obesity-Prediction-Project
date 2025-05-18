@@ -38,7 +38,7 @@ def standardize(raw_data):
 def load_model(raw_data):
  # === 1. Preprocessing ===
  #print("=== Preprocessing Training Data ===")
- pre_train = pp.PreProcess("train_dataset.csv")  # Modify k (num_features) as needed
+ #pre_train = pp.PreProcess("train_dataset.csv")  # Modify k (num_features) as needed
  processedtrain_df = pd.read_csv("train processed_data.csv")
  #processedtrain_df.to_csv("train processed_data.csv", index=False)
 
@@ -61,10 +61,10 @@ def load_model(raw_data):
 
  # === 4. Train vs Test Accuracy to Check Overfitting ===
  #print("\n=== Overfitting Check ===")
- train_preds = rf_classifier.predict(X_train)
- test_preds = rf_classifier.predict(X_test)
- train_acc = accuracy_score(Y_train, train_preds)
- test_acc = accuracy_score(Y_test, test_preds)
+ #train_preds = rf_classifier.predict(X_train)
+ #test_preds = rf_classifier.predict(X_test)
+ #train_acc = accuracy_score(Y_train, train_preds)
+ #test_acc = accuracy_score(Y_test, test_preds)
  #print(f"Train Accuracy: {train_acc:.4f}")
  #print(f"Test Accuracy: {test_acc:.4f}")
  #if train_acc - test_acc < 0.15:

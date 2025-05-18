@@ -40,20 +40,20 @@ def standardize(raw_data):
 def load_model(raw_data):
    # === 1. Preprocessing ===
  #print("=== Preprocessing Training Data ===")
- pre_train = pp.PreProcess("train processed_data.csv")  # Modify k (num_features) as needed
+ #pre_train = pp.PreProcess("train processed_data.csv")  # Modify k (num_features) as needed
  processedtrain_df = pd.read_csv("train processed_data.csv")
  #processedtrain_df.to_csv("train processed_data.csv", index=False)
 
  #print("\n=== Preprocessing Test Data ===")
- pre_test = pp.PreProcess("test processed_data.csv")  # Modify k (num_features) as needed
+ #pre_test = pp.PreProcess("test processed_data.csv")  # Modify k (num_features) as needed
  processedtest_df = pd.read_csv("test processed_data.csv")
  #processedtest_df.to_csv("test processed_data.csv", index=False)
 
  # === 2. Split Features and Labels ===
  X_train=processedtrain_df.drop(columns='NObeyesdad')
  Y_train=processedtrain_df['NObeyesdad']
- X_test=processedtest_df.drop(columns='NObeyesdad')
- Y_test=processedtest_df['NObeyesdad']
+ #X_test=processedtest_df.drop(columns='NObeyesdad')
+ #Y_test=processedtest_df['NObeyesdad']
 
  # === 3. SVM Model & GridSearch ===
  #print("\n=== Training Model with GridSearch ===")
