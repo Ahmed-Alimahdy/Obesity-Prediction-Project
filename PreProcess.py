@@ -160,5 +160,3 @@ class PreProcess:
        # Drop highly correalted features
        to_drop = [col for col in upper.columns if any(upper[col] > pruninig_factor)]
        self.df = self.df.drop(columns=to_drop)
-    
-pp = PreProcess('train_dataset.csv', 8, 0.9)
